@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, fs, io};
 
 /*
 * Oh dear, this is painful to look at but I couldn't find any other way to do this without a
@@ -51,4 +51,26 @@ pub fn parse_args() -> Result<Args, String> {
     };
 
     Ok(ls_args)
+}
+
+pub fn print_dir_content(args: Args) -> Result<(), io::Error> {
+    for content in fs::read_dir(args.path)? {
+        let content = content?;
+        let file = content.path();
+
+        /*
+         * apparently it is also difficult to get terminal colors in rust without an external
+         * package because for some reason, it simply prints out the CYAN and RESET strings unlike
+         * the Golang package
+         */
+        let file_name = file.file_name().unwrap().to_str().unwrap();
+
+        if file_name.starts_with(".") && !args.show_hidden {
+            continue;
+        }
+
+        println!("{}", file_name)
+    }
+
+    Ok(())
 }
