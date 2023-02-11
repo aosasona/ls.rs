@@ -1,9 +1,5 @@
 use rustls::{parse_args, Args};
-use std::process;
-
-// Oh dear, this is painful to look at but I couldn't find any other way to do this without a
-// package like clap and I am definitely not even a 2/10 when it comes to rust lmao; first actual
-// rust code/experiment?
+use std::{fs, process};
 
 fn main() {
     let args: Args;
@@ -15,5 +11,20 @@ fn main() {
         }
     }
 
-    print!("{:?}", args);
+    for content in fs::read_dir(args.path).unwrap() {
+        let file = content.unwrap().path();
+
+        /*
+         * apparently it is also difficult to get terminal colors in rust without an external
+         * package because for some reason, it simply prints out the CYAN and RESET strings unlike
+         * the Golang package
+         */
+        let file_name = file.file_name().unwrap().to_str().unwrap();
+
+        if file_name.starts_with(".") && !args.show_hidden {
+            continue;
+        }
+
+        println!("{}", file_name)
+    }
 }

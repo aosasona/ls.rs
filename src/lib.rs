@@ -1,9 +1,15 @@
 use std::env;
 
+/*
+* Oh dear, this is painful to look at but I couldn't find any other way to do this without a
+* package like clap and I am definitely not even a 2/10 when it comes to rust lmao; first actual
+* rust code/experiment?
+*/
+
 #[derive(Debug)]
 pub struct Args {
-    show_hidden: bool,
-    path: String,
+    pub show_hidden: bool,
+    pub path: String,
 }
 
 impl Args {
